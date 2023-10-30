@@ -12,9 +12,8 @@ export function useLocationItems(shared = false){
     }, [location, tree])
 }
 
-export function useLocationFileTemplate(shared = false){
-    
-    const file_templates = useSelector(state => state.file_templates)
+export function useLocationFile(shared = false){
+    const file_template = useSelector(state => state.file_templates.includes)
     const location = useSelector(state => state.env.location)
     const library_detail = location.length > 0 ? library_details[_.last(location)] : null
     return library_detail ? file_templates[library_detail.file_template] : null

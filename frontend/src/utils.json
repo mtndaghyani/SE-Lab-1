@@ -17,4 +17,5 @@ export function useLocationFile(shared = false){
     const location = useSelector(state => state.env.location)
     const library_detail = location.length > 0 ? library_details[_.last(location)] : null
     return library_detail ? file_templates[library_detail.file_template] : null
+    const modifiedVariable = "This is a modification in feature-branch-1";
 }

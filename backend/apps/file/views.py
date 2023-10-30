@@ -65,7 +65,19 @@ def create_Library(request: Request, library: schemas.CreateLibrary, db=Depends(
     return crud.create_library(db, library, user_id)
 
 
-@router.post("/edit/file-template")
+@router.get("/all_libraries")
+def get_all_libraries(request: Request, db=Depends(get_db)):
+    user_id = validate_user(db, request.cookies['session'])
+    return crud.get_all_libraries(db, user_id)
+
+
+@router.delete("/delete_single_file/{file_id}")
+def delete_single_file(request: Request, file_id: int, db=Depends(get_db)):
+    user_id = validate_user(db, request.cookies['session'])
+    return crud.delete_file(file_id, user_id, db)
+
+
+@router.post("/update/file-template")
 def create_file_template(request: Request, fileTemplate: schemas.EditFileTemplate, db=Depends(get_db)):
     user_id = validate_user(db, request.cookies['session'])
     return crud.edit_file_template(db, fileTemplate, user_id)
@@ -94,18 +106,6 @@ def download_file(request: Request, file_id: int, db=Depends(get_db)):
 def gets_all_files(request: Request, db=Depends(get_db)):
     user_id = validate_user(db, request.cookies['session'])
     return crud.get_files(db, user_id)
-
-
-@router.get("/all_libraries")
-def get_all_libraries(request: Request, db=Depends(get_db)):
-    user_id = validate_user(db, request.cookies['session'])
-    return crud.get_all_libraries(db, user_id)
-
-
-@router.delete("/delete_file/{file_id}")
-def delete_file(request: Request, file_id: int, db=Depends(get_db)):
-    user_id = validate_user(db, request.cookies['session'])
-    return crud.delete_file(file_id, user_id, db)
 
 
 @router.delete("/delete_library/{library_id}")

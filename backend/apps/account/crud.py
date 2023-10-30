@@ -44,3 +44,40 @@ def get_user(db: Session, username: str, password: str):
 
 def get_token(db: Session, token: str):
     return db.query(models.UserLoginToken).filter(models.UserLoginToken.token == token).first()
+
+
+def login(db: Session, user_id: int):
+    db_user_login = db.query(models.UserLoginToken).filter(models.UserLoginToken.user_id == user_id).first()
+    if db_user_login:
+        return db_user_login.token
+    db_user_login = models.UserLoginToken(
+        user_id=user_id,
+        token=uuid4()
+    )
+    db.add(db_user_login)
+    db.commit()
+    db.refresh(db_user_login)
+    return db_user_login.token
+
+
+def logout(db: Session, user_logout_token: models.UserLoginToken):
+    db.delete(user_logout_token)
+    db.commit()
+    return user_logout_token.token
+
+
+def update_user(db: Session, user_id: int, username: str = None, email: str = None, password: str = None):
+    user = db.query(models.User).filter(models.User.id == user_id).first()
+    if user:
+        if username:
+            user.username = username
+        if email:
+            user.email = email
+        if password:
+            user.password = password
+
+        db.commit()
+        db.refresh(user)
+
+        return {"message": f"User with ID {user_id} updated successfully"}
+    return {"error": "User not found"}
